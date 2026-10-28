@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian CAT Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-full text-slate-800 antialiased selection:bg-blue-500 selection:text-white flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="https://cdn.phototourl.com/member/2026-09-28-523950e4-4b19-4b31-96a6-7fbd7721c757.png" 
+                     alt="Logo CAT Online" 
+                     class="h-10 w-auto object-contain max-w-[160px]"
+                     onerror="this.onerror=null; this.src='https://placehold.co/120x40/2563eb/ffffff?text=CAT+Online';">
+                <div>
+                    <h1 class="text-base font-bold text-slate-900 leading-tight">PORTAL CAT Online</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Sistem Ujian Computer Assisted Test</p>
+                    <p class="text-xs text-slate-500 hidden sm:block font-medium text-blue-700">SD NEGERI 1 BANDUNG</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
+                    <span class="text-[11px] font-medium text-slate-500">Created by</span>
+                    <img src="https://cdn.phototourl.com/member/2026-09-28-c7d8d789-5ce9-4f65-9b84-7d69a0771dd5.png" 
+                         alt="Created By Logo" 
+                         class="h-7 w-auto object-contain"
+                         onerror="this.onerror=null; this.src='https://placehold.co/80x28/2563eb/ffffff?text=Creator';">
+                </div>
+
+                <!-- Header Exam Info (Visible during exam) -->
+                <div id="header-exam-info" class="hidden flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-xs">
+                        <i class="fa-solid fa-user-check text-blue-600"></i>
+                        <span id="nav-user-name" class="font-semibold text-slate-700">Peserta</span>
+                    </div>
+
+                    <div class="flex items-center gap-2 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl text-rose-700 font-mono font-bold text-sm shadow-sm">
+                        <i class="fa-regular fa-clock animate-pulse text-rose-600"></i>
+                        <span id="timer">50:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col">
+	<!-- 1. START / PETUNJUK UJIAN SCREEN -->
+        <div id="start-screen" class="my-auto max-w-lg w-full mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 text-center space-y-4">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-expand"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800">Petunjuk Ujian</h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Ujian ini wajib dikerjakan dalam mode layar penuh (Fullscreen). Pastikan Anda tidak menutup atau berpindah jendela selama ujian berlangsung.
+                </p>
+                
+                <button onclick="requestFullScreen()" class="w-full sm:w-auto px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 mx-auto">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Mulai Ujian (Mode Layar Penuh)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. LOGIN SCREEN -->
+        <div id="login-screen" class="hidden my-auto max-w-md w-full mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white text-center">
+                    <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-3 backdrop-blur-md p-2">
+                        <img src="https://cdn.phototourl.com/member/2026-09-28-523950e4-4b19-4b31-96a6-7fbd7721c757.png" 
+                             alt="Logo Konfirmasi Identitas" 
+                             class="w-full h-full object-contain filter drop-shadow"
+                             onerror="this.onerror=null; this.src='https://placehold.co/64x64/2563eb/ffffff?text=Logo';">
+                    </div>
+                    <h2 class="text-xl font-bold">Konfirmasi Identitas</h2>
+                    <p class="text-xs text-blue-100 mt-1">Masukkan Nama Lengkap Anda untuk memulai</p>
+                </div>
+
+                <form id="login-form" onsubmit="handleStartExam(event)" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+                            <input type="text" id="user-name" required placeholder="Contoh: Ahmad Subagja" 
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 rounded-xl p-3 border border-amber-200 flex gap-2.5 text-xs text-amber-800">
+                        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-sm shrink-0"></i>
+                        <p class="leading-relaxed">Ujian berlangsung selama <strong>50 menit</strong> dengan <strong id="total-questions-info">15 soal</strong> variasi. Pastikan koneksi internet Anda lancar.</p>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2">
+                        <span>Mulai Ujian</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. EXAM INTERFACE SCREEN -->
+        <div id="exam-app" class="hidden space-y-6">
+            <!-- Progress Bar -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Progres Ujian</span>
+                    <div class="w-full sm:w-48 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                        <div id="exam-progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-semibold text-slate-600 self-end sm:self-auto">
+                    <span>Pelanggaran: <strong id="violation-badge" class="text-rose-600">0</strong>/3</span>
+                    <span class="text-slate-300">|</span>
+                    <span>Terjawab: <strong id="answered-badge" class="text-blue-600">0</strong>/<span id="total-badge">15</span></span>
+                    <span class="text-slate-300">|</span>
+                    <span>Ragu: <strong id="marked-badge" class="text-amber-600">0</strong></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Main Question Area -->
+                <div class="lg:col-span-3 space-y-4">
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 relative min-h-[380px] flex flex-col justify-between">
+                        
+                        <!-- Question Header & Type Badge -->
+                        <div>
+                            <div class="flex items-center justify-between border-b pb-4 mb-5">
+                                <div class="flex items-center gap-2">
+                                    <span id="question-number-badge" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-lg">Soal 1</span>
+                                    <span id="question-type-badge" class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">Pilihan Ganda</span>
+                                </div>
+                                <button onclick="toggleMarkCurrentQuestion()" id="flag-btn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                    <span>Ragu-Ragu</span>
+                                </button>
+                            </div>
+
+                            <!-- Question Text -->
+                            <div id="question-container" class="text-slate-800 font-medium text-base leading-relaxed mb-4 whitespace-pre-line">
+                                <!-- Dynamic Question Text -->
+                            </div>
+
+                            <!-- Dynamic Question Image Container -->
+                            <div id="question-image-container" class="hidden mb-6 text-center">
+								<div class="relative group inline-block max-w-full">
+									<img id="question-image" src="" alt="Gambar Soal" 
+										 class="max-h-80 w-auto rounded-xl border border-slate-200 shadow-sm object-contain cursor-pointer hover:opacity-95 transition mx-auto"
+										 onclick="openImageModal(this.src)">
+									<span class="text-[10px] text-slate-400 mt-1 block"><i class="fa-solid fa-magnifying-glass-plus"></i> Klik gambar untuk memperbesar</span>
+								</div>
+							</div>
+
+                            <!-- Answer Options Container -->
+                            <div id="options-container" class="space-y-3">
+                                <!-- Dynamic Options -->
+                            </div>
+                        </div>
+
+                        <!-- Footer Navigation Buttons -->
+                        <div class="flex items-center justify-between pt-6 border-t mt-8 gap-2">
+                            <button id="prev-btn" onclick="navigateQuestion(-1)" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition flex items-center gap-2">
+                                <i class="fa-solid fa-chevron-left"></i>
+                                <span>Sebelumnya</span>
+                            </button>
+
+                            <button id="next-btn" onclick="navigateQuestion(1)" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md shadow-blue-500/20 transition flex items-center gap-2">
+                                <span>Berikutnya</span>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Question Palette Grid -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sticky top-20">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center justify-between">
+                            <span>Navigasi Soal</span>
+                            <i class="fa-solid fa-grip text-slate-400"></i>
+                        </h3>
+
+                        <!-- Question Grid Matrix -->
+                        <div id="question-grid" class="grid grid-cols-5 gap-2 mb-6 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                            <!-- Dynamic Question Buttons -->
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="border-t pt-4 space-y-2 text-[11px] text-slate-600">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded bg-blue-600 inline-block"></span>
+                                <span>Sudah Dijawab</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded bg-amber-500 inline-block"></span>
+                                <span>Ragu-Ragu</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded bg-slate-100 border border-slate-300 inline-block"></span>
+                                <span>Belum Dijawab</span>
+                            </div>
+                        </div>
+
+                        <button onclick="openSubmitModal()" class="w-full mt-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Selesaikan Ujian</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RESULT & REVIEW SCREEN -->
+        <div id="result-screen" class="hidden space-y-6 max-w-4xl mx-auto w-full">
+            <!-- Result Summary Card -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500"></div>
+                
+                <!-- Status Server Webhook Batch -->
+                <div id="submit-status" class="mb-4 hidden p-3 rounded-xl text-xs font-medium transition-all">
+                    <!-- Dynamic server status badge -->
+                </div>
+
+                <!-- Admin URL Config Trigger Button -->
+                <div class="mb-4 flex justify-end">
+                    <button onclick="openAdminPasswordModal()" class="text-xs text-slate-500 hover:text-blue-600 font-medium inline-flex items-center gap-1.5 transition px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200">
+                        <i class="fa-solid fa-lock text-amber-500"></i> Ganti URL (Admin)
+                    </button>
+                </div>
+
+                <!-- Webhook URL Config Input -->
+                <div id="webhook-config-panel" class="hidden mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 text-left space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                            <i class="fa-solid fa-link text-blue-600"></i> URL Google Apps Script Web App
+                        </label>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="custom-script-url" 
+                            class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                            placeholder="https://script.google.com/macros/s/.../exec">
+                        <button onclick="resendResultData()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shrink-0 transition flex items-center gap-1">
+                            <i class="fa-solid fa-paper-plane"></i> Kirim Ulang
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] text-slate-500">
+                        <p>Pastikan URL Web App Anda diset ke <strong>"Anyone" (Siapa Saja)</strong> agar data Nama & Nilai bisa masuk tanpa kendala.</p>
+                        <button onclick="closeAdminConfigPanel()" class="text-xs text-rose-600 hover:underline shrink-0 ml-2 font-medium">Sembunyikan</button>
+                    </div>
+                </div>
+
+                <!-- Personalized Greeting & Motivation -->
+                <div class="mb-6">
+                    <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-sm">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Ujian Selesai!</h2>
+                    <p class="text-xs text-slate-500 mt-1">Hasil ujian Anda telah dikalkulasi secara otomatis.</p>
+                </div>
+
+                <!-- Score Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-xs font-medium text-slate-500 block">Skor Akhir</span>
+                        <span id="res-score" class="text-3xl font-extrabold text-blue-600 mt-1 block">0</span>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+                        <span class="text-xs font-medium text-emerald-700 block">Benar</span>
+                        <span id="res-correct" class="text-3xl font-extrabold text-emerald-600 mt-1 block">0</span>
+                    </div>
+                    <div class="p-4 bg-rose-50 rounded-xl border border-rose-200">
+                        <span class="text-xs font-medium text-rose-700 block">Salah</span>
+                        <span id="res-wrong" class="text-3xl font-extrabold text-rose-600 mt-1 block">0</span>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-xs font-medium text-slate-500 block">Waktu Pengerjaan</span>
+                        <span id="res-time" class="text-xl font-bold text-slate-700 mt-2 block font-mono">00:00</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <button onclick="toggleDiscussionSection()" class="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Lihat Pembahasan Soal</span>
+                    </button>
+                    <button onclick="restartExam()" class="w-full sm:w-auto px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Ulangi Ujian</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Discussion Section (Initially Hidden) -->
+            <div id="discussion-section" class="hidden space-y-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-blue-600"></i> Pembahasan Soal
+                </h3>
+                <div id="review-container" class="space-y-4">
+                    <!-- Dynamic Review Cards -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div id="submit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all scale-100">
+            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Selesaikan Ujian?</h3>
+            <p id="modal-summary-text" class="text-xs text-slate-500 mt-2 leading-relaxed">
+                Anda telah menjawab <span id="modal-answered-count" class="font-bold text-slate-700">0</span> dari <span id="modal-total-count">15</span> soal. Pastikan semua jawaban sudah diperiksa kembali.
+            </p>
+
+            <div class="mt-6 flex items-center space-x-3">
+                <button onclick="closeSubmitModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                    Batal
+                </button>
+                <button onclick="submitExam()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-emerald-500/20 transition">
+                    Ya, Kumpulkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMEOUT ALERT MODAL -->
+    <div id="timeout-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-hourglass-end animate-bounce"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Waktu Telah Habis!</h3>
+            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                Waktu pengerjaan ujian Anda telah berakhir. Sistem akan mengumpulkan jawaban Anda secara otomatis.
+            </p>
+            <button onclick="acknowledgeTimeout()" class="mt-6 w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md transition">
+                Lihat Hasil Ujian
+            </button>
+        </div>
+    </div>
+
+    <!-- VIOLATION WARNING MODAL -->
+    <div id="violation-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center border-2 border-rose-500 animate-pulse">
+            <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Peringatan Pelanggaran!</h3>
+            <p id="violation-message" class="text-xs text-slate-600 mt-2 leading-relaxed italic">
+                "Berbuatlah sesuatu dengan jujur agar Ilmu yang engkau dapat bermanfaat untukmu."
+            </p>
+            <p class="text-xs font-semibold text-rose-600 mt-3">
+                Pelanggaran ke-<span id="violation-count-text">1</span> dari 3
+            </p>
+            <button onclick="closeViolationModal()" class="mt-6 w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-sm shadow-md transition">
+                Saya Mengerti & Kembali ke Ujian
+            </button>
+        </div>
+    </div>
+
+    <!-- VIOLATION LIMIT EXCEEDED MODAL -->
+    <div id="violation-limit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center border-2 border-rose-600">
+            <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-ban"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-800">Ujian Dihentikan Otomatis</h3>
+            <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 my-4 text-left space-y-2">
+                <p class="text-xs font-semibold text-rose-800">
+                    "Berbuatlah sesuatu dengan jujur agar Ilmu yang engkau dapat bermanfaat untukmu."
+                </p>
+                <p class="text-xs font-bold text-rose-700">
+                    Batas keluar masuk ujian sudah maksimal, Nilai sudah terekam.
+                </p>
+            </div>
+            <button onclick="acknowledgeViolationLimit()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-sm shadow-md transition">
+                Lihat Hasil
+            </button>
+        </div>
+    </div>
+
+    <!-- ADMIN PASSWORD MODAL -->
+    <div id="admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Akses Pengaturan Admin</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan sandi untuk mengubah URL Google Apps Script</p>
+
+            <form onsubmit="handleAdminPasswordSubmit(event)" class="space-y-3">
+                <div>
+                    <input type="password" id="admin-password-input" placeholder="Masukkan Sandi Admin" required
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <p id="admin-password-error" class="hidden text-rose-600 text-[11px] mt-1.5 font-medium flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation"></i> Sandi salah! Silakan coba lagi.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeAdminPasswordModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-blue-500/20 transition">
+                        Konfirmasi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DISCUSSION PASSWORD MODAL -->
+    <div id="discussion-password-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all scale-100">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Akses Pembahasan Soal</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">Masukkan sandi untuk membuka pembahasan soal ujian.</p>
+
+            <form onsubmit="handleDiscussionPasswordSubmit(event)" class="space-y-3">
+                <div>
+                    <input type="password" id="discussion-password-input" placeholder="Masukkan Sandi Pembahasan" required
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-center focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+                    <p id="discussion-password-error" class="hidden text-rose-600 text-[11px] mt-1.5 font-medium flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation"></i> Sandi salah! Akses ditolak.
+                    </p>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeDiscussionPasswordModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs shadow-md shadow-blue-500/20 transition">
+                        Buka Akses
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- IMAGE PREVIEW MODAL -->
+    <div id="image-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-[90vh] p-2 bg-white rounded-2xl shadow-2xl" onclick="event.stopPropagation()">
+            <button onclick="closeImageModal()" class="absolute -top-3 -right-3 w-8 h-8 bg-rose-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-rose-700 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="image-modal-src" src="" alt="Gambar Diperbesar" class="max-h-[85vh] w-auto rounded-xl object-contain">
+        </div>
+    </div>
+
+    <script>
+        // Database Soal Terkelompok berdasarkan Tipe Soal
+        const questionBank = {
+            pilihanGanda: [
+                {
+                    "id": 1791377055101,
+                    "type": "single",
+                    "typeName": "Pilihan Ganda",
+                    "cognitiveLevel": "C1",
+                    "question": "Apa yang dimaksud dengan rantai makanan dalam ekosistem?",
+                    "options": [
+                        "Peristiwa makan dan dimakan antar makhluk hidup dengan urutan tertentu",
+                        "Kumpulan hewan yang hidup di dalam satu habitat yang sama",
+                        "Proses tumbuhan membuat makanan sendiri melalui cahaya matahari",
+                        "Hubungan kerja sama yang saling menguntungkan antar makhluk hidup"
+                    ],
+                    "statements": [],
+                    "correctAnswer": 0,
+                    "discussion": "Rantai makanan adalah peristiwa makan dan dimakan antar makhluk hidup dengan urutan tertentu, di mana terjadi perpindahan energi dari satu organisme ke organisme lainnya.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 1791377055102,
+                    "type": "single",
+                    "typeName": "Pilihan Ganda",
+                    "cognitiveLevel": "C2",
+                    "question": "Dalam suatu ekosistem kebun, peran tumbuhan hijau pada awal rantai makanan adalah sebagai...",
+                    "options": [
+                        "Konsumen tingkat I",
+                        "Produsen",
+                        "Pengurai",
+                        "Konsumen puncak"
+                    ],
+                    "statements": [],
+                    "correctAnswer": 1,
+                    "discussion": "Tumbuhan hijau bertindak sebagai produsen karena mampu menghasilkan makanannya sendiri melalui proses fotosintesis dan menjadi sumber energi awal bagi organisme lain.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 1791377055103,
+                    "type": "single",
+                    "typeName": "Pilihan Ganda",
+                    "cognitiveLevel": "C2",
+                    "question": "Perhatikan urutan rantai makanan berikut: Rumput -> Belalang -> Katak -> Ular -> Elang. Hewan yang berperan sebagai konsumen tingkat II adalah...",
+                    "options": [
+                        "Belalang",
+                        "Katak",
+                        "Ular",
+                        "Elang"
+                    ],
+                    "statements": [],
+                    "correctAnswer": 1,
+                    "discussion": "Rumput adalah produsen. Belalang memakan rumput sebagai konsumen tingkat I (herbivora). Katak memakan belalang sehingga berperan sebagai konsumen tingkat II.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 1791377055104,
+                    "type": "single",
+                    "typeName": "Pilihan Ganda",
+                    "cognitiveLevel": "C3",
+                    "question": "Jika populasi ular di sawah mengalami penurunan drastis akibat perburuan, apa dampak yang paling mungkin terjadi pada rantai makanan (padi -> tikus -> ular -> elang)?",
+                    "options": [
+                        "Populasi padi akan meningkat pesat",
+                        "Populasi tikus akan meningkat karena kurangnya pemangsa",
+                        "Populasi elang akan bertambah banyak",
+                        "Populasi belalang akan punah"
+                    ],
+                    "statements": [],
+                    "correctAnswer": 1,
+                    "discussion": "Ular adalah pemangsa alami tikus. Jika ular berkurang, tikus tidak ada yang memangsa sehingga populasinya akan meningkat, yang kemudian dapat merusak tanaman padi.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 1791377055105,
+                    "type": "single",
+                    "typeName": "Pilihan Ganda",
+                    "cognitiveLevel": "C1",
+                    "question": "Makhluk hidup yang bertugas menguraikan sisa-sisa makhluk hidup yang sudah mati menjadi zat hara di dalam tanah adalah...",
+                    "options": [
+                        "Karnivora",
+                        "Herbivora",
+                        "Pengurai (Dekomposer)",
+                        "Produsen"
+                    ],
+                    "statements": [],
+                    "correctAnswer": 2,
+                    "discussion": "Pengurai atau dekomposer (seperti jamur dan bakteri) menguraikan sisa organisme mati untuk mengembalikan nutrisi atau zat hara ke dalam tanah yang dibutuhkan oleh tumbuhan.",
+                    "showImage": false,
+                    "imageUrl": ""
+                }
+            ],
+            pilihanGandaKompleks: [
+                {
+                    "id": 101,
+                    "type": "multiple",
+                    "typeName": "Pilihan Ganda Kompleks",
+                    "cognitiveLevel": "C3",
+                    "question": "Dalam sebuah ekosistem kebun, jika petani menggunakan pestisida berlebih untuk membasmi hama ulat (padi -> ulat -> burung kecil -> elang), manakah pernyataan yang benar mengenai dampaknya? (Pilih semua jawaban yang benar)",
+                    "options": [
+                        "Populasi ulat akan menurun drastis akibat pestisida",
+                        "Populasi burung kecil akan ikut terancam karena kekurangan makanan dan keracunan",
+                        "Populasi padi akan langsung musnah karena pestisida merusak akar",
+                        "Kelangsungan hidup burung elang akan terganggu karena jumlah mangsanya berkurang"
+                    ],
+                    "correctAnswer": [0, 1, 3],
+                    "discussion": "Pestisida membunuh ulat (pangan burung kecil), dan residu kimia juga berdampak buruk langsung pada burung kecil. Berkurangnya ulat dan burung kecil membuat elang kekurangan sumber makanan, sehingga rantai makanan terganggu.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 102,
+                    "type": "multiple",
+                    "typeName": "Pilihan Ganda Kompleks",
+                    "cognitiveLevel": "C3",
+                    "question": "Perhatikan rantai makanan di ekosistem sawah: Padi -> Tikus -> Ular -> Elang. Jika terjadi wabah penyakit yang menyebabkan sebagian besar populasi ular mati, manakah akibat yang mungkin terjadi? (Pilih semua jawaban yang benar)",
+                    "options": [
+                        "Populasi tikus meningkat karena tidak ada pemangsa alami",
+                        "Tanaman padi terancam gagal panen karena serangan tikus meningkat",
+                        "Populasi elang akan bertambah banyak secara drastis",
+                        "Populasi elang dapat menurun karena kekurangan sumber makanan (ular)"
+                    ],
+                    "correctAnswer": [0, 1, 3],
+                    "discussion": "Ular adalah pemangsa tikus dan mangsa bagi elang. Hilangnya ular memicu ledakan populasi tikus (merusak padi) dan mengurangi ketersediaan makanan bagi elang.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 103,
+                    "type": "multiple",
+                    "typeName": "Pilihan Ganda Kompleks",
+                    "cognitiveLevel": "C3",
+                    "question": "Sebuah ekosistem laut memiliki rantai makanan: Fitoplankton -> Ikan Kecil -> Ikan Besar -> Hiu. Jika terjadi pencemaran limbah beracun yang mencemari sebagian besar fitoplankton, apa saja dampak yang dapat diamati? (Pilih semua jawaban yang benar)",
+                    "options": [
+                        "Populasi ikan kecil akan menurun karena kehilangan sumber makanan utama",
+                        "Jumlah hiu akan meningkat pesat karena tidak ada pesaing",
+                        "Ikan besar akan mengalami kekurangan makanan seiring menurunnya jumlah ikan kecil",
+                        "Seluruh tingkat trofik di atasnya akan ikut terganggu keseimbangannya"
+                    ],
+                    "correctAnswer": [0, 2, 3],
+                    "discussion": "Fitoplankton adalah produsen utama di laut. Kerusakan pada produsen akan berdampak beruntun ke seluruh tingkat konsumen di atasnya (ikan kecil, ikan besar, hingga hiu).",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 104,
+                    "type": "multiple",
+                    "typeName": "Pilihan Ganda Kompleks",
+                    "cognitiveLevel": "C3",
+                    "question": "Seorang peneliti mengamati ekosistem hutan dengan rantai makanan: Tumbuhan -> Rusa -> Serigala. Jika manusia melakukan perburuan liar terhadap serigala hingga hampir punah, bagaimana cara menerapkan analisis yang tepat untuk situasi tersebut? (Pilih semua jawaban yang benar)",
+                    "options": [
+                        "Populasi rusa akan melonjak karena tidak ada lagi predator yang mengontrol jumlahnya",
+                        "Tumbuhan hutan akan mengalami kerusakan parah akibat terlalu banyak rusa yang memakannya",
+                        "Cadangan makanan rusa akan semakin melimpah dan membuat ekosistem semakin subur",
+                        "Keseimbangan ekosistem hutan akan terganggu secara signifikan"
+                    ],
+                    "correctAnswer": [0, 1, 3],
+                    "discussion": "Tanpa serigala sebagai predator, populasi rusa meningkat tak terkendali dan menghabiskan tumbuhan (overgrazing), yang berujung pada rusaknya keseimbangan ekosistem hutan.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 105,
+                    "type": "multiple",
+                    "typeName": "Pilihan Ganda Kompleks",
+                    "cognitiveLevel": "C3",
+                    "question": "Dalam suatu ekosistem kolam, terdapat rantai makanan: Alga -> Ikan Herbivora -> Ikan Karnivora -> Burung Pemangsa. Manakah tindakan manusia yang dapat memicu ketidakseimbangan pada rantai makanan tersebut? (Pilih semua jawaban yang benar)",
+                    "options": [
+                        "Menangkap ikan karnivora secara berlebihan menggunakan jaring besar",
+                        "Membuang limbah deterjen yang kaya fosfat sehingga alga tumbuh terlalu subur (blooming alga)",
+                        "Melakukan konservasi dan menjaga kelestarian habitat kolam secara berkala",
+                        "Memasukkan spesies ikan asing invasif yang memangsa ikan herbivora"
+                    ],
+                    "correctAnswer": [0, 1, 3],
+                    "discussion": "Penangkapan ikan berlebih, pencemaran limbah (blooming alga), dan masuknya spesies invasif adalah faktor-faktor yang merusak alur alami rantai makanan.",
+                    "showImage": false,
+                    "imageUrl": ""
+                }
+            ],
+            benarSalah: [
+                {
+                    "id": 201,
+                    "type": "true_false",
+                    "typeName": "Pernyataan Benar / Salah",
+                    "cognitiveLevel": "C4",
+                    "question": "Analisislah dampak dari perubahan komponen dalam ekosistem rantai makanan (Rumput -> Belalang -> Katak -> Ular -> Elang) berikut ini. Tentukan benar atau salah untuk setiap pernyataan!",
+                    "statements": [
+                        {
+                            "id": "s1",
+                            "text": "Jika populasi katak menurun drastis akibat perburuan, maka populasi belalang akan meningkat karena berkurangnya pemangsa alami."
+                        },
+                        {
+                            "id": "s2",
+                            "text": "Kepunahan ular secara langsung akan menyebabkan populasi rumput habis total dalam waktu singkat."
+                        },
+                        {
+                            "id": "s3",
+                            "text": "Bertambahnya jumlah elang secara tidak terkendali akan memicu penurunan populasi ular di ekosistem tersebut."
+                        }
+                    ],
+                    "correctAnswer": {
+                        "s1": true,
+                        "s2": false,
+                        "s3": true
+                    },
+                    "discussion": "Pernyataan 1 benar karena katak adalah pemangsa belalang. Pernyataan 2 salah karena ular tidak memakan rumput secara langsung, sehingga kepunahan ular tidak langsung menghabiskan rumput. Pernyataan 3 benar karena semakin banyak elang, kebutuhan mangsa (termasuk ular) akan meningkat sehingga populasi ular dapat tertekan.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 202,
+                    "type": "true_false",
+                    "typeName": "Pernyataan Benar / Salah",
+                    "cognitiveLevel": "C4",
+                    "question": "Evaluasi situasi yang terjadi pada rantai makanan di ekosistem laut: (Fitoplankton -> Zooplankton -> Ikan Kecil -> Ikan Hiu). Tentukan benar atau salah untuk analisis berikut!",
+                    "statements": [
+                        {
+                            "id": "s1",
+                            "text": "Jika zooplankton mengalami kematian massal akibat pencemaran, maka ikan kecil akan kesulitan mendapatkan makanan sehingga populasinya ikut menurun."
+                        },
+                        {
+                            "id": "s2",
+                            "text": "Hiu akan beralih memakan fitoplankton secara langsung jika populasi ikan kecil habis."
+                        },
+                        {
+                            "id": "s3",
+                            "text": "Fitoplankton berfungsi sebagai produsen yang menyediakan energi dasar bagi seluruh tingkat trofik di atasnya."
+                        }
+                    ],
+                    "correctAnswer": {
+                        "s1": true,
+                        "s2": false,
+                        "s3": true
+                    },
+                    "discussion": "Pernyataan 1 benar karena ikan kecil memakan zooplankton. Pernyataan 2 salah karena hiu adalah karnivora puncak yang tidak memakan produsen (fitoplankton). Pernyataan 3 benar karena fitoplankton adalah produsen yang berfotosintesis di awal rantai makanan laut.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 203,
+                    "type": "true_false",
+                    "typeName": "Pernyataan Benar / Salah",
+                    "cognitiveLevel": "C4",
+                    "question": "Perhatikan skema rantai makanan di ekosistem sawah: (Padi -> Tikus -> Ular -> Elang). Lakukan analisis kritis terhadap hubungan antarorganisme, lalu tentukan benar atau salah untuk pernyataan berikut!",
+                    "statements": [
+                        {
+                            "id": "s1",
+                            "text": "Ular berperan ganda sebagai konsumen tingkat II (saat memangsa tikus) sekaligus sumber makanan bagi konsumen tingkat IV (elang)."
+                        },
+                        {
+                            "id": "s2",
+                            "text": "Energi matahari ditangkap secara langsung oleh tikus untuk melakukan metabolisme tubuh."
+                        },
+                        {
+                            "id": "s3",
+                            "text": "Jika petani menggunakan bahan kimia pembasmi hama yang mencemari padi, konsentrasi racun tertinggi akan menumpuk pada tubuh konsumen puncak (elang)."
+                        }
+                    ],
+                    "correctAnswer": {
+                        "s1": true,
+                        "s2": false,
+                        "s3": true
+                    },
+                    "discussion": "Pernyataan 1 benar karena ular memangsa tikus (konsumen II) dan dimangsa elang. Pernyataan 2 salah karena energi matahari ditangkap oleh produsen (padi), bukan tikus. Pernyataan 3 benar karena terjadi fenomena biomagnifikasi (akumulasi bahan pencemar biologis) yang semakin tinggi pada tingkat trofik atas.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 204,
+                    "type": "true_false",
+                    "typeName": "Pernyataan Benar / Salah",
+                    "cognitiveLevel": "C4",
+                    "question": "Analisislah peran dan intervensi manusia dalam rantai makanan hutan: (Pohon -> Rusa -> Macan Tutul). Tentukan benar atau salah untuk pernyataan di bawah ini!",
+                    "statements": [
+                        {
+                            "id": "s1",
+                            "text": "Perburuan macan tutul secara liar akan menyebabkan populasi rusa meroket dan berujung pada kerusakan vegetasi hutan karena kehabisan pasokan pohon."
+                        },
+                        {
+                            "id": "s2",
+                            "text": "Macan tutul dapat dikategorikan sebagai produsen karena berada di puncak rantai makanan."
+                        },
+                        {
+                            "id": "s3",
+                            "text": "Hilangnya pohon secara masif akibat penebangan liar akan merusak kestabilan seluruh rantai makanan dari tingkat dasar."
+                        }
+                    ],
+                    "correctAnswer": {
+                        "s1": true,
+                        "s2": false,
+                        "s3": true
+                    },
+                    "discussion": "Pernyataan 1 benar karena hilangnya predator memicu ledakan herbivora (overgrazing). Pernyataan 2 salah karena macan tutul adalah konsumen puncak, bukan produsen. Pernyataan 3 benar karena kerusakan produsen (pohon) memutuskan sumber energi utama seluruh rantai makanan.",
+                    "showImage": false,
+                    "imageUrl": ""
+                },
+                {
+                    "id": 205,
+                    "type": "true_false",
+                    "typeName": "Pernyataan Benar / Salah",
+                    "cognitiveLevel": "C4",
+                    "question": "Evaluasi pengaruh dekomposer dalam suatu jaring-jaring atau rantai makanan di dalam ekosistem. Tentukan benar atau salah untuk analisis berikut!",
+                    "statements": [
+                        {
+                            "id": "s1",
+                            "text": "Pengurai (seperti jamur dan bakteri) bertugas mendaur ulang sisa organisme yang mati menjadi zat hara yang dapat diserap kembali oleh tumbuhan."
+                        },
+                        {
+                            "id": "s2",
+                            "text": "Tanpa adanya pengurai, nutrisi di dalam tanah akan menumpuk dan membuat tumbuhan tumbuh jauh lebih subur selamanya."
+                        },
+                        {
+                            "id": "s3",
+                            "text": "Aktivitas pengurai menghubungkan kembali siklus materi dari tingkat trofik tertinggi maupun terendah kembali ke produsen."
+                        }
+                    ],
+                    "correctAnswer": {
+                        "s1": true,
+                        "s2": false,
+                        "s3": true
+                    },
+                    "discussion": "Pernyataan 1 benar karena dekomposer menguraikan bangkai/sisa organik menjadi zat hara. Pernyataan 2 salah karena tanpa pengurai, zat hara terkunci dalam bangkai dan tidak bisa diserap tumbuhan, sehingga kesuburan tanah justru akan habis. Pernyataan 3 benar karena dekomposer mengurai semua sisa makhluk hidup dari berbagai tingkat trofik.",
+                    "showImage": false,
+                    "imageUrl": ""
+                }
+            ]
+        };
+
+        const questionsData = [
+            ...questionBank.pilihanGanda,
+            ...questionBank.pilihanGandaKompleks,
+            ...questionBank.benarSalah
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let markedQuestions = new Set();
+        let timerInterval = null;
+        let timeRemaining = 50 * 60;
+        let userName = "";
+        let defaultScriptUrl = "https://script.google.com/macros/s/AKfycbx3bGR9zxdQ8cHcyCuzk5YpT_J_NHaAVT5jgpRLd7xqziTosMR0ioNcfPF0_Cjphkcw/exec";
+
+        // Sistem Pelanggaran & Fullscreen Tracker
+        let violationCount = 0;
+        const maxViolations = 3;
+        let isExamActive = false;
+        let isExamSubmitted = false;
+
+        document.getElementById('total-questions-info').innerText = questionsData.length + " soal";
+        document.getElementById('total-badge').innerText = questionsData.length;
+
+        // FUNGSI LAYAR PENUH (FULLSCREEN)
+        function requestFullScreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // DETEKSI PELANGGARAN: KELUAR FULLSCREEN ATAU PERPINDAHAN TAB / LATAR BELAKANG
+        document.addEventListener('fullscreenchange', handleViolationCheck);
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                handleViolationCheck();
+            }
+        });
+
+        function handleViolationCheck() {
+            if (!isExamActive || isExamSubmitted) return;
+
+            violationCount++;
+            document.getElementById('violation-badge').innerText = violationCount;
+
+            if (violationCount >= maxViolations) {
+                isExamActive = false;
+                clearInterval(timerInterval);
+                document.getElementById('violation-limit-modal').classList.remove('hidden');
+                autoSubmitDueToViolation();
+            } else {
+                document.getElementById('violation-count-text').innerText = violationCount;
+                document.getElementById('violation-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeViolationModal() {
+            document.getElementById('violation-modal').classList.add('hidden');
+            if (!document.fullscreenElement) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(() => {});
+                }
+            }
+        }
+
+        function autoSubmitDueToViolation() {
+            isExamSubmitted = true;
+            calculateAndSendResult();
+        }
+
+        function acknowledgeViolationLimit() {
+            document.getElementById('violation-limit-modal').classList.add('hidden');
+            showResultScreen();
+        }
+
+        // Modal Gambar Preview
+        function openImageModal(src) {
+            document.getElementById('image-modal-src').src = src;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+
+        function handleStartExam(e) {
+            e.preventDefault();
+            const inputName = document.getElementById('user-name').value.trim();
+            if(!inputName) return;
+
+            userName = inputName;
+            document.getElementById('nav-user-name').innerText = userName;
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('exam-app').classList.remove('hidden');
+            document.getElementById('header-exam-info').classList.remove('hidden');
+
+            isExamActive = true;
+            initTimer();
+            renderQuestion();
+            renderQuestionGrid();
+        }
+
+        function initTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                let mins = Math.floor(timeRemaining / 60);
+                let secs = timeRemaining % 60;
+                document.getElementById('timer').innerText = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    isExamActive = false;
+                    document.getElementById('timeout-modal').classList.remove('hidden');
+                    autoSubmitDueToTimeout();
+                }
+            }, 1000);
+        }
+
+        function autoSubmitDueToTimeout() {
+            isExamSubmitted = true;
+            calculateAndSendResult();
+        }
+
+        function acknowledgeTimeout() {
+            document.getElementById('timeout-modal').classList.add('hidden');
+            showResultScreen();
+        }
+
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            document.getElementById('question-number-badge').innerText = `Soal ${currentQuestionIndex + 1}`;
+            document.getElementById('question-type-badge').innerText = q.typeName || 'Pilihan Ganda';
+            document.getElementById('question-container').innerText = q.question;
+
+            // Gambar
+            const imgContainer = document.getElementById('question-image-container');
+            const imgElem = document.getElementById('question-image');
+            if (q.showImage && q.imageUrl) {
+                imgElem.src = q.imageUrl;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            // Flag / Ragu
+            const flagBtn = document.getElementById('flag-btn');
+            if (markedQuestions.has(q.id)) {
+                flagBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition bg-amber-500 border-amber-500 text-white";
+            } else {
+                flagBtn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-50 border-slate-300 text-slate-600 hover:bg-slate-100";
+            }
+
+            // Options
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            if (q.type === 'single') {
+                q.options.forEach((opt, idx) => {
+                    const isSelected = userAnswers[q.id] === idx;
+                    const optBtn = document.createElement('button');
+                    optBtn.className = `w-full text-left p-4 rounded-xl border transition flex items-start gap-3 ${isSelected ? 'bg-blue-50 border-blue-500 text-blue-900 font-semibold shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}`;
+                    optBtn.onclick = () => selectSingleAnswer(q.id, idx);
+                    optBtn.innerHTML = `
+                        <span class="w-6 h-6 rounded-full border text-xs flex items-center justify-center shrink-0 ${isSelected ? 'bg-blue-600 border-blue-600 text-white font-bold' : 'bg-white border-slate-300 text-slate-500'}">${String.fromCharCode(65 + idx)}</span>
+                        <span class="text-sm leading-relaxed">${opt}</span>
+                    `;
+                    optContainer.appendChild(optBtn);
+                });
+            } else if (q.type === 'multiple') {
+                const currentAns = userAnswers[q.id] || [];
+                q.options.forEach((opt, idx) => {
+                    const isSelected = currentAns.includes(idx);
+                    const optBtn = document.createElement('button');
+                    optBtn.className = `w-full text-left p-4 rounded-xl border transition flex items-start gap-3 ${isSelected ? 'bg-blue-50 border-blue-500 text-blue-900 font-semibold shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}`;
+                    optBtn.onclick = () => selectMultipleAnswer(q.id, idx);
+                    optBtn.innerHTML = `
+                        <div class="w-5 h-5 rounded border text-xs flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300'}">
+                            ${isSelected ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                        </div>
+                        <span class="text-sm leading-relaxed">${opt}</span>
+                    `;
+                    optContainer.appendChild(optBtn);
+                });
+            } else if (q.type === 'true_false') {
+                const currentAns = userAnswers[q.id] || {};
+                
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm';
+
+                let tableHTML = `
+                    <div class="bg-slate-100 px-4 py-3 border-b border-slate-200 flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        <span class="flex-1">Pernyataan</span>
+                        <div class="flex items-center gap-2 sm:gap-4 shrink-0 w-36 sm:w-48 justify-center">
+                            <span class="w-16 sm:w-20 text-center text-emerald-700">Benar</span>
+                            <span class="w-16 sm:w-20 text-center text-rose-700">Salah</span>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                `;
+
+                const statements = q.statements || [];
+
+                statements.forEach((stmt, idx) => {
+                    const stmtVal = currentAns[stmt.id];
+                    const isTrue = stmtVal === true;
+                    const isFalse = stmtVal === false;
+
+                    const safeStmtId = String(stmt.id).replace(/'/g, "\\'");
+
+                    tableHTML += `
+                        <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 transition">
+                            <div class="text-xs text-slate-800 font-medium leading-relaxed flex-1 flex gap-2">
+                                <span class="font-bold text-slate-400 shrink-0">${idx + 1}.</span>
+                                <span>${stmt.text}</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0 justify-end sm:justify-center">
+                                <button type="button" onclick="setTrueFalseAnswer(${q.id}, '${safeStmtId}', true)" 
+                                    class="w-16 sm:w-20 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border ${
+                                        isTrue 
+                                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-500/20 ring-2 ring-emerald-500/30' 
+                                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-700'
+                                    }">
+                                    <i class="fa-solid fa-check ${isTrue ? 'inline-block' : 'hidden'} text-[10px]"></i>
+                                    <span>BENAR</span>
+                                </button>
+                                <button type="button" onclick="setTrueFalseAnswer(${q.id}, '${safeStmtId}', false)" 
+                                    class="w-16 sm:w-20 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border ${
+                                        isFalse 
+                                        ? 'bg-rose-600 text-white border-rose-600 shadow-md shadow-rose-500/20 ring-2 ring-rose-500/30' 
+                                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700'
+                                    }">
+                                    <i class="fa-solid fa-xmark ${isFalse ? 'inline-block' : 'hidden'} text-[10px]"></i>
+                                    <span>SALAH</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                tableHTML += `</div>`;
+                tableContainer.innerHTML = tableHTML;
+                optContainer.appendChild(tableContainer);
+            }
+
+            // Navigation Buttons State
+            document.getElementById('prev-btn').disabled = currentQuestionIndex === 0;
+            document.getElementById('prev-btn').style.opacity = currentQuestionIndex === 0 ? '0.5' : '1';
+
+            updateProgressSummary();
+        }
+
+        function selectSingleAnswer(qId, idx) {
+            userAnswers[qId] = idx;
+            renderQuestion();
+            renderQuestionGrid();
+        }
+
+        function selectMultipleAnswer(qId, idx) {
+            let currentAns = userAnswers[qId] ? [...userAnswers[qId]] : [];
+            if (currentAns.includes(idx)) {
+                currentAns = currentAns.filter(i => i !== idx);
+            } else {
+                currentAns.push(idx);
+            }
+            userAnswers[qId] = currentAns;
+            renderQuestion();
+            renderQuestionGrid();
+        }
+
+        function setTrueFalseAnswer(qId, stmtId, val) {
+            if (!userAnswers[qId]) {
+                userAnswers[qId] = {};
+            }
+            userAnswers[qId][stmtId] = val;
+            renderQuestion();
+            renderQuestionGrid();
+        }
+
+        function toggleMarkCurrentQuestion() {
+            const qId = questionsData[currentQuestionIndex].id;
+            if (markedQuestions.has(qId)) {
+                markedQuestions.delete(qId);
+            } else {
+                markedQuestions.add(qId);
+            }
+            renderQuestion();
+            renderQuestionGrid();
+        }
+
+        function navigateQuestion(dir) {
+            const newIndex = currentQuestionIndex + dir;
+            if (newIndex >= 0 && newIndex < questionsData.length) {
+                currentQuestionIndex = newIndex;
+                renderQuestion();
+            }
+        }
+
+        function renderQuestionGrid() {
+            const grid = document.getElementById('question-grid');
+            grid.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const isAnswered = isQuestionAnswered(q);
+                const isMarked = markedQuestions.has(q.id);
+                const isCurrent = idx === currentQuestionIndex;
+
+                let btnClass = "h-9 w-full rounded-lg text-xs font-bold transition flex items-center justify-center border ";
+
+                if (isCurrent) {
+                    btnClass += "ring-2 ring-blue-500 ring-offset-1 ";
+                }
+
+                if (isMarked) {
+                    btnClass += "bg-amber-500 border-amber-500 text-white";
+                } else if (isAnswered) {
+                    btnClass += "bg-blue-600 border-blue-600 text-white";
+                } else {
+                    btnClass += "bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-200";
+                }
+
+                const btn = document.createElement('button');
+                btn.className = btnClass;
+                btn.innerText = idx + 1;
+                btn.onclick = () => {
+                    currentQuestionIndex = idx;
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function isQuestionAnswered(q) {
+            const ans = userAnswers[q.id];
+            if (ans === undefined || ans === null) return false;
+            if (q.type === 'single') return true;
+            if (q.type === 'multiple') return Array.isArray(ans) && ans.length > 0;
+            if (q.type === 'true_false') return typeof ans === 'object' && Object.keys(ans).length === q.statements.length;
+            return false;
+        }
+
+        function updateProgressSummary() {
+            let answeredCount = 0;
+            questionsData.forEach(q => {
+                if (isQuestionAnswered(q)) answeredCount++;
+            });
+
+            document.getElementById('answered-badge').innerText = answeredCount;
+            document.getElementById('marked-badge').innerText = markedQuestions.size;
+
+            const pct = Math.round((answeredCount / questionsData.length) * 100);
+            document.getElementById('exam-progress-bar').style.width = `${pct}%`;
+        }
+
+        function openSubmitModal() {
+            let answeredCount = 0;
+            questionsData.forEach(q => {
+                if (isQuestionAnswered(q)) answeredCount++;
+            });
+
+            document.getElementById('modal-answered-count').innerText = answeredCount;
+            document.getElementById('modal-total-count').innerText = questionsData.length;
+            document.getElementById('submit-modal').classList.remove('hidden');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-modal').classList.add('hidden');
+        }
+
+        function submitExam() {
+            closeSubmitModal();
+            clearInterval(timerInterval);
+            isExamActive = false;
+            isExamSubmitted = true;
+            calculateAndSendResult();
+            showResultScreen();
+        }
+
+        let finalCalculatedScore = 0;
+        let finalCorrectCount = 0;
+        let finalWrongCount = 0;
+        let finalTimeTaken = "";
+
+        function calculateAndSendResult() {
+            let correct = 0;
+            let wrong = 0;
+
+            questionsData.forEach(q => {
+                const ans = userAnswers[q.id];
+                if (q.type === 'single') {
+                    if (ans === q.correctAnswer) correct++;
+                    else wrong++;
+                } else if (q.type === 'multiple') {
+                    if (Array.isArray(ans)) {
+                        const sortedUser = [...ans].sort().join(',');
+                        const sortedCorrect = [...q.correctAnswer].sort().join(',');
+                        if (sortedUser === sortedCorrect) correct++;
+                        else wrong++;
+                    } else {
+                        wrong++;
+                    }
+                } else if (q.type === 'true_false') {
+                    if (ans && typeof ans === 'object') {
+                        let allCorrect = true;
+                        q.statements.forEach(stmt => {
+                            if (ans[stmt.id] !== q.correctAnswer[stmt.id]) {
+                                allCorrect = false;
+                            }
+                        });
+                        if (allCorrect) correct++;
+                        else wrong++;
+                    } else {
+                        wrong++;
+                    }
+                }
+            });
+
+            finalCorrectCount = correct;
+            finalWrongCount = wrong;
+            finalCalculatedScore = Math.round((correct / questionsData.length) * 100);
+
+            let elapsedSeconds = (50 * 60) - timeRemaining;
+            let eMins = Math.floor(elapsedSeconds / 60);
+            let eSecs = elapsedSeconds % 60;
+            finalTimeTaken = `${eMins < 10 ? '0' : ''}${eMins}:${eSecs < 10 ? '0' : ''}${eSecs}`;
+
+            sendDataToWebhook();
+        }
+
+        function showResultScreen() {
+            document.getElementById('exam-app').classList.add('hidden');
+            document.getElementById('header-exam-info').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            document.getElementById('res-score').innerText = finalCalculatedScore;
+            document.getElementById('res-correct').innerText = finalCorrectCount;
+            document.getElementById('res-wrong').innerText = finalWrongCount;
+            document.getElementById('res-time').innerText = finalTimeTaken;
+        }
+
+        function sendDataToWebhook() {
+            const url = document.getElementById('custom-script-url').value.trim() || defaultScriptUrl;
+            const statusDiv = document.getElementById('submit-status');
+            statusDiv.classList.remove('hidden', 'bg-rose-100', 'text-rose-800', 'bg-emerald-100', 'text-emerald-800');
+            statusDiv.classList.add('bg-blue-50', 'text-blue-800');
+            statusDiv.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Mengirim data nilai ke server Google Sheets...`;
+
+            const payload = {
+                nama: userName,
+                skor: finalCalculatedScore,
+                benar: finalCorrectCount,
+                salah: finalWrongCount,
+                waktu: finalTimeTaken,
+                pelanggaran: violationCount,
+                tanggal: new Date().toLocaleString('id-ID')
+            };
+
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                statusDiv.className = "mb-4 p-3 rounded-xl text-xs font-medium bg-emerald-100 text-emerald-800 flex items-center justify-center gap-2";
+                statusDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Nilai Anda telah berhasil dikirim & terekam di database!`;
+            })
+            .catch(err => {
+                statusDiv.className = "mb-4 p-3 rounded-xl text-xs font-medium bg-rose-100 text-rose-800 flex items-center justify-center gap-2";
+                statusDiv.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600"></i> Gagal terhubung otomatis. Silakan cek URL Web App Admin.`;
+            });
+        }
+
+        function resendResultData() {
+            sendDataToWebhook();
+        }
+
+        // Admin & Discussion Modal logic
+        function openAdminPasswordModal() {
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-password-error').classList.add('hidden');
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminPasswordModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function handleAdminPasswordSubmit(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-password-input').value;
+            if (pass === 'admin123') { // Sandi Admin Default
+                closeAdminPasswordModal();
+                document.getElementById('webhook-config-panel').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-password-error').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminConfigPanel() {
+            document.getElementById('webhook-config-panel').classList.add('hidden');
+        }
+
+        function toggleDiscussionSection() {
+            const discSec = document.getElementById('discussion-section');
+            if (discSec.classList.contains('hidden')) {
+                document.getElementById('discussion-password-input').value = '';
+                document.getElementById('discussion-password-error').classList.add('hidden');
+                document.getElementById('discussion-password-modal').classList.remove('hidden');
+            } else {
+                discSec.classList.add('hidden');
+            }
+        }
+
+        function closeDiscussionPasswordModal() {
+            document.getElementById('discussion-password-modal').classList.add('hidden');
+        }
+
+        function handleDiscussionPasswordSubmit(e) {
+            e.preventDefault();
+            const pass = document.getElementById('discussion-password-input').value;
+            if (pass === '123456') { // Sandi Pembahasan Default
+                closeDiscussionPasswordModal();
+                renderDiscussion();
+                document.getElementById('discussion-section').classList.remove('hidden');
+            } else {
+                document.getElementById('discussion-password-error').classList.remove('hidden');
+            }
+        }
+
+        function renderDiscussion() {
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[q.id];
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-left";
+
+                let ansStatusHtml = "";
+                let userAnsText = "-";
+
+                if (q.type === 'single') {
+                    const isCorrect = userAns === q.correctAnswer;
+                    ansStatusHtml = isCorrect 
+                        ? `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-check"></i> Benar</span>`
+                        : `<span class="px-2.5 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-xmark"></i> Salah</span>`;
+                    userAnsText = userAns !== undefined ? q.options[userAns] : 'Tidak dijawab';
+                } else if (q.type === 'multiple') {
+                    const sortedUser = Array.isArray(userAns) ? [...userAns].sort().join(',') : '';
+                    const sortedCorrect = [...q.correctAnswer].sort().join(',');
+                    const isCorrect = sortedUser === sortedCorrect;
+
+                    ansStatusHtml = isCorrect 
+                        ? `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-check"></i> Benar</span>`
+                        : `<span class="px-2.5 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-xmark"></i> Salah</span>`;
+                    
+                    userAnsText = Array.isArray(userAns) && userAns.length > 0
+                        ? userAns.map(i => q.options[i]).join('; ')
+                        : 'Tidak dijawab';
+                } else if (q.type === 'true_false') {
+                    let allCorrect = true;
+                    if (userAns && typeof userAns === 'object') {
+                        q.statements.forEach(stmt => {
+                            if (userAns[stmt.id] !== q.correctAnswer[stmt.id]) {
+                                allCorrect = false;
+                            }
+                        });
+                    } else {
+                        allCorrect = false;
+                    }
+
+                    ansStatusHtml = allCorrect 
+                        ? `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-check"></i> Benar</span>`
+                        : `<span class="px-2.5 py-1 bg-rose-100 text-rose-700 text-xs font-bold rounded-lg"><i class="fa-solid fa-xmark"></i> Salah</span>`;
+
+                    userAnsText = q.statements.map(stmt => {
+                        const val = userAns ? userAns[stmt.id] : undefined;
+                        const label = val === true ? 'Benar' : (val === false ? 'Salah' : 'Belum diisi');
+                        return `[Pernyataan ${stmt.id}: ${label}]`;
+                    }).join(' ');
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <span class="text-xs font-bold text-slate-500">Soal ${idx + 1} (${q.typeName})</span>
+                        ${ansStatusHtml}
+                    </div>
+                    <p class="text-sm font-medium text-slate-800 leading-relaxed">${q.question}</p>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+                        <p class="text-slate-600"><strong>Jawaban Anda:</strong> ${userAnsText}</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-xl border border-blue-200 text-xs text-blue-900 leading-relaxed">
+                        <strong><i class="fa-solid fa-lightbulb text-amber-500"></i> Pembahasan:</strong> ${q.discussion || 'Tidak ada pembahasan.'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function restartExam() {
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
